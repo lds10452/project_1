@@ -5,8 +5,8 @@
 #include<QJsonObject>
 #include<QJsonArray>
 #include<QDebug>
-void ParseJsonArray(const QJsonArray& arr);
-void ParseJsonObject(const QJsonObject& obj);
+void ParseJsonArray(const QJsonArray& arr,int order);
+void ParseJsonObject(const QJsonObject& obj,int order);
 
 void ReadJsonFile()
 {
@@ -22,10 +22,10 @@ void ReadJsonFile()
     QJsonDocument doc=QJsonDocument::fromJson(fileData);
     if(doc.isObject())
     {
-        ParseJsonObject(doc.object());
+        ParseJsonObject(doc.object(),0);
     }
     else if(doc.isArray()){
-        ParseJsonArray(doc.array());
+        ParseJsonArray(doc.array(),0);
     }
 }
 void WriteJsonFile()
@@ -63,56 +63,66 @@ int main()
     return 0;
 }
 
-void ParseJsonObject(const QJsonObject& obj)
+void ParseJsonObject(const QJsonObject& obj,int order)
 {
-    qDebug()<<"{";
-    QStringList keys=obj.keys();
-    for(int i=0;i<keys.size();i++)
+    QString tab="";
+    for(int i=0;i<order;i++)
     {
-        QJsonValue value=obj[keys[i]];
+        tab.append('\t');
+    }
+    qDebug().noquote()<<tab<<"{";
+    for(QJsonObject::const_iterator it=obj.begin();it!=obj.end();it++)
+    {
+        QString key=it.key();
+        QJsonValue value=obj[key];
         if(value.isDouble())
         {
-            qDebug()<<keys[i]<<":"<<value.toInt()<<",";
+            qDebug().noquote()<<tab<<key<<":"<<value.toInt()<<",";
         }
         else if (value.isString()) {
-            qDebug()<<keys[i]<<":"<<value.toString()<<",";
+            qDebug().noquote()<<tab<<key<<":"<<value.toString()<<",";
         }
         else if (value.isBool()) {
-            qDebug()<<keys[i]<<":"<<value.toBool()<<",";
+            qDebug().noquote()<<tab<<key<<":"<<value.toBool()<<",";
         }
         else if (value.isObject()) {
-            qDebug()<<keys[i]<<":";
-            ParseJsonObject(value.toObject());
+            qDebug().noquote()<<tab<<key<<":";
+            ParseJsonObject(value.toObject(),order+1);
         }
         else if (value.isArray()) {
-            qDebug()<<keys[i]<<":";
-            ParseJsonArray(value.toArray());
+            qDebug().noquote()<<tab<<key<<":";
+            ParseJsonArray(value.toArray(),order+1);
         }
     }
-    qDebug()<<"}";
+    qDebug().noquote()<<tab<<"}";
 }
-void ParseJsonArray(const QJsonArray& arr)
+void ParseJsonArray(const QJsonArray& arr,int order)
 {
-    qDebug()<<"[";
+    QString tab="";
+    for(int i=0;i<order;i++)
+    {
+        tab.append('\t');
+    }
+    qDebug().noquote()<<tab<<"[";
     for(int i=0;i<arr.size();i++)
     {
         QJsonValue value=arr[i];
         if(value.isDouble())
         {
-            qDebug()<<value.toInt()<<",";
+            qDebug().noquote()<<tab<<value.toInt()<<",";
         }
         else if (value.isString()) {
-            qDebug()<<value.toString()<<",";
+            qDebug().noquote()<<tab<<value.toString()<<",";
         }
         else if (value.isBool()) {
-            qDebug()<<value.toBool()<<",";
+            qDebug().noquote()<<tab<<value.toBool()<<",";
         }
         else if (value.isObject()) {
-            ParseJsonObject(value.toObject());
+            ParseJsonObject(value.toObject(),order+1);
         }
         else if (value.isArray()) {
-            ParseJsonArray(value.toArray());
+            ParseJsonArray(value.toArray(),order+1);
         }
     }
-    qDebug()<<"]";
+    qDebug().noquote()<<tab<<"]";
 }
