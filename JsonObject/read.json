@@ -1,0 +1,12 @@
+{
+	"name":"zhang3",
+	"isMan": true,
+	"age":24,
+	"sex":"man",
+	"family":["father", "mother", "sister",10,false],
+	"family1":{
+		"father":"zhang2",
+		"mother":"小红",
+		"sister":"小小红"
+	}
+}

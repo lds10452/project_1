@@ -1,0 +1,15 @@
+{
+    "age": 21,
+    "family": [
+        "father",
+        false,
+        10,
+        "mother"
+    ],
+    "family1": {
+        "age": 45,
+        "father": "小李"
+    },
+    "isMan": true,
+    "name": "小张"
+}
